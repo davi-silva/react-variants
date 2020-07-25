@@ -22,35 +22,99 @@ export const InputsDiv = styled.div`
   margin-bottom: 6px;
 `;
 
-export const OptionNameInput = styled.input`
-  background: rgba(0, 0, 0, 0.15);
-  border: none;
-  font-size: 14px;
-  padding: 7px 7px;
-  width: 150px;
-  border: 1px solid transparent;
-  color: #18840f;
-  font-weight: 900;
+export const InputsDivGrid = styled.div`
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: 0.2fr 1fr 0.5fr 0.5fr 1fr 1fr;
+  margin-bottom: 6px;
+`;
+
+export const CheckboxDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const VariantsDivDisplay = styled.div`
+  width: 100%;
+  min-height: 40px;
+  font-size: 16px;
+  display: block;
+  margin: 5px 0;
+  padding: 8px;
+  text-align: center;
+  box-sizing: border-box;
+  -webkit-letter-spacing: 0.04em;
+  -moz-letter-spacing: 0.04em;
+  -ms-letter-spacing: 0.04em;
+  -webkit-letter-spacing: 0.04em;
+  -moz-letter-spacing: 0.04em;
+  -ms-letter-spacing: 0.04em;
+  letter-spacing: 0.04em;
+  border: 1px solid rgb(184,196,194);
+  border-image: initial;
+  border-radius: 4px;
+  background: rgb(255,255,255);
+  -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   &:focus {
-    border: 1px solid #18840f;
+    border-color: #18840f;
     outline: none;
+  }
+  &::placeholder {
+    color: 1px solid rgb(184, 196, 194);
+  }
+`;
+
+export const OptionNameInput = styled.input`
+  height: 40px;
+  width: 150px;
+  font-size: 16px;
+  display: block;
+  margin: 5px 0;
+  padding-left: 12px;
+  box-sizing: border-box;
+  -webkit-letter-spacing: 0.04em;
+  -moz-letter-spacing: 0.04em;
+  -ms-letter-spacing: 0.04em;
+  letter-spacing: 0.04em;
+  border: 1px solid rgb(184, 196, 194);
+  border-image: initial;
+  border-radius: 4px;
+  background: rgb(255, 255, 255);
+  transition: all 0.2s ease-in-out;
+  &:focus {
+    border-color: #18840f;
+    outline: none;
+  }
+  &::placeholder {
+    color: 1px solid rgb(184, 196, 194);
   }
 `;
 
 export const OptionValuesInput = styled.input`
-  background: rgba(0, 0, 0, 0.15);
-  border: none;
-  font-size: 14px;
-  padding: 7px 7px;
-  border: 1px solid transparent;
+  height: 40px;
   width: 100%;
-  color: #18840f;
-  font-weight: 900;
+  font-size: 16px;
+  display: block;
+  margin: 5px 0;
+  padding-left: 12px;
+  box-sizing: border-box;
+  -webkit-letter-spacing: 0.04em;
+  -moz-letter-spacing: 0.04em;
+  -ms-letter-spacing: 0.04em;
+  letter-spacing: 0.04em;
+  border: 1px solid rgb(184, 196, 194);
+  border-image: initial;
+  border-radius: 4px;
+  background: rgb(255, 255, 255);
   transition: all 0.2s ease-in-out;
   &:focus {
-    border: 1px solid #18840f;
+    border-color: #18840f;
     outline: none;
+  }
+  &::placeholder {
+    color: 1px solid rgb(184, 196, 194);
   }
 `;
 
@@ -112,7 +176,7 @@ export const VariantsFieldsDiv = styled.div`
   display: grid;
   /* grid-template-columns: 1fr 1fr;
   grid-gap: 8px; */
-  width: 100%:
+  width: 100%;
 `;
 
 export const VariantsH2 = styled.h2`
@@ -120,4 +184,10 @@ export const VariantsH2 = styled.h2`
   font-weight: 900;
   color: #18840f;
   margin-bottom: 1rem;
+`;
+
+export const Label = styled.label`
+  color: #18840f;
+  font-size: 13px;
+  font-weight: 900;
 `;

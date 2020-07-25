@@ -9,22 +9,72 @@ import {
   RemoveFieldButton,
   VariantsDiv,
   VariantsFieldsDiv,
+  VariantsDivDisplay,
+  InputsDivGrid,
+  CheckboxDiv,
   VariantsH2,
+  Label,
 } from '../../../styles/components/UI/Variants/Variants';
 
-const Variants = () => {
+const Variants = (props) => {
+  const { handleGetVariants } = props;
+
   const [optionFields, setOptionFields] = useState([
     { optionName: '', optionValues: '' },
   ]);
   const [optionValuesArray, setOptionValuesArray] = useState([[]]);
   const [combinedValues, setCombinedValues] = useState([]);
   const [modifiableOptionValues, setModifiableValues] = useState([]);
-  const [combinedValueLength, setCombinedValuesLength] = useState(0);
+
+  useEffect(() => {
+    handleGetVariants(modifiableOptionValues);
+  }, [modifiableOptionValues]);
+
+  const AddModifiableOptionValues = () => {
+    const values = [...modifiableOptionValues];
+    values.push({
+      active: true,
+      variantValues: [],
+      prices: {
+        price: 0,
+        compareTo: 0,
+      },
+      inventory: {
+        sku: '',
+        barcode: '',
+      },
+    });
+    setModifiableValues(values);
+  };
+
+  useEffect(() => {
+    const values = [];
+    for (let i = 0; i < combinedValues.length; i += 1) {
+      values.push({
+        active: true,
+        variantValues: [],
+        prices: {
+          price: 0,
+          compareTo: 0,
+        },
+        inventory: {
+          sku: '',
+          barcode: '',
+        },
+      });
+    }
+
+    combinedValues.map((value, index) => {
+      values[index].variantValues = value;
+    });
+
+    setModifiableValues(values);
+  }, [combinedValues]);
 
   const permute = (input) => {
     const out = [];
 
-    (function permute_r(input, current) {
+    (function permuteR(input, current) {
       if (input.length === 0) {
         out.push(current);
         return;
@@ -33,7 +83,7 @@ const Variants = () => {
       const next = input.slice(1);
 
       for (let i = 0, n = input[0].length; i != n; ++i) {
-        permute_r(next, current.concat([input[0][i]]));
+        permuteR(next, current.concat([input[0][i]]));
       }
     }(input, []));
 
@@ -46,23 +96,6 @@ const Variants = () => {
     setCombinedValues(combinatedValuesResult);
     // console.log('combinatedValuesResult:', combinatedValuesResult);
   }, [optionValuesArray]);
-
-  useEffect(() => {
-    const modifiableOptionValuesTemp = [...modifiableOptionValues];
-
-    modifiableOptionValuesTemp.push({
-      active: true,
-      varientValues: [],
-      prices: {
-        price: 25.0,
-        compareTo: 30.0,
-      },
-      inventory: {
-        sku: '',
-        barcode: '',
-      },
-    });
-  }, [combinedValues.length]);
 
   const handleAddFields = () => {
     const values = [...optionFields];
@@ -102,10 +135,60 @@ const Variants = () => {
     setOptionValuesArray(valuesArray);
   };
 
+  const handleCombinedInputChange = (index, e) => {
+    const values = [...modifiableOptionValues];
+    if (e.target.name === 'active') {
+      if (e.target.value === 'true') {
+        values[index].active = true;
+      }
+      if (e.target.value === 'false') {
+        values[index].active = false;
+      }
+    }
+    if (e.target.name === 'variantValues') {
+      values[index].variantValues = e.target.value;
+    }
+    if (e.target.name === 'price') {
+      values[index].prices.price = e.target.value;
+    }
+    if (e.target.name === 'compareTo') {
+      values[index].prices.compareTo = e.target.value;
+    }
+    if (e.target.name === 'sku') {
+      values[index].inventory.sku = e.target.value;
+    }
+    if (e.target.name === 'barcode') {
+      values[index].inventory.barcode = e.target.value;
+    }
+    setModifiableValues(values);
+  };
+
+  const convertVariantArrayToString = (index) => {
+    if (modifiableOptionValues[index] !== undefined) {
+      let variantString = '';
+      modifiableOptionValues[index].variantValues.map((variant, key) => {
+        if (key === modifiableOptionValues[index].variantValues.length - 1) {
+          variantString += `${variant}`;
+        } else {
+          variantString += `${variant} `;
+        }
+      });
+      return variantString;
+    }
+  };
+
+  const getActiveVariantValue = (index) => {
+    if (modifiableOptionValues[index] !== undefined) {
+      const values = [...modifiableOptionValues];
+      values[index].active = !values[index].active;
+      setModifiableValues(values);
+    }
+  };
+
   return (
     <>
       <VariantsDiv>
-        <VariantsH2>Extra Information</VariantsH2>
+        <VariantsH2>Variants</VariantsH2>
         <VariantsFieldsDiv>
           {optionFields.length > 0 && (
             <>
@@ -132,7 +215,11 @@ const Variants = () => {
                     }}
                   />
                   <ButtonsDiv>
-                    <AddFieldButton onClick={() => handleAddFields()}>
+                    <AddFieldButton onClick={() => {
+                      handleAddFields();
+                      AddModifiableOptionValues();
+                    }}
+                    >
                       <FaPlus />
                     </AddFieldButton>
                     {optionFields.length > 1 && (
@@ -147,7 +234,102 @@ const Variants = () => {
           )}
         </VariantsFieldsDiv>
       </VariantsDiv>
-      <p>{combinedValues}</p>
+
+      {combinedValues.length > 0 && (
+        <VariantsDiv>
+          <VariantsFieldsDiv>
+            <InputsDivGrid>
+              <div />
+              <div>
+                <Label>Variant</Label>
+              </div>
+              <div>
+                <Label>Price</Label>
+              </div>
+              <div>
+                <Label>Compare To</Label>
+              </div>
+              <div>
+                <Label>SKU</Label>
+              </div>
+              <div>
+                <Label>Barcode</Label>
+              </div>
+            </InputsDivGrid>
+            {combinedValues.map((value, index) => (
+              <InputsDivGrid>
+                <CheckboxDiv>
+                  {modifiableOptionValues[index] !== undefined && (
+                    <>
+                      {modifiableOptionValues[index].active ? (
+                        <input
+                          type='checkbox'
+                          name='active'
+                          onChange={(e) => {
+                            handleCombinedInputChange(index, e);
+                            getActiveVariantValue(index, e);
+                          }}
+                          checked
+                        />
+                      ) : (
+                        <input
+                          type='checkbox'
+                          name='active'
+                          onChange={(e) => {
+                            handleCombinedInputChange(index, e);
+                            getActiveVariantValue(index, e);
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+                </CheckboxDiv>
+                <div>
+                  <VariantsDivDisplay
+                    type='text'
+                    name='variantValues'
+                    disabled
+                  >
+                    {convertVariantArrayToString(index)}
+                  </VariantsDivDisplay>
+                </div>
+                <div>
+                  <OptionValuesInput
+                    name='price'
+                    onChange={(e) => {
+                      handleCombinedInputChange(index, e);
+                    }}
+                  />
+                </div>
+                <div>
+                  <OptionValuesInput
+                    name='compareTo'
+                    onChange={(e) => {
+                      handleCombinedInputChange(index, e);
+                    }}
+                  />
+                </div>
+                <div>
+                  <OptionValuesInput
+                    name='sku'
+                    onChange={(e) => {
+                      handleCombinedInputChange(index, e);
+                    }}
+                  />
+                </div>
+                <div>
+                  <OptionValuesInput
+                    name='barcode'
+                    onChange={(e) => {
+                      handleCombinedInputChange(index, e);
+                    }}
+                  />
+                </div>
+              </InputsDivGrid>
+            ))}
+          </VariantsFieldsDiv>
+        </VariantsDiv>
+      )}
     </>
   );
 };
